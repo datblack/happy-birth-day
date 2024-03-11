@@ -27,14 +27,16 @@
 
 <body>
     <audio autoplay id="audioPlayer">
-        <source src="https://firebasestorage.googleapis.com/v0/b/hpbd-3d804.appspot.com/o/love.mp3?alt=media&token=c0a9499a-d13a-47d6-8806-be14d66bb21e" type="audio/mpeg" />
+        <source
+            src="https://firebasestorage.googleapis.com/v0/b/hpbd-3d804.appspot.com/o/love.mp3?alt=media&token=c0a9499a-d13a-47d6-8806-be14d66bb21e"
+            type="audio/mpeg" />
     </audio>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-          var audio = document.getElementById("audioPlayer");
-          audio.play();
+        window.addEventListener("load", function () {
+            var audio = document.getElementById("audioPlayer");
+            audio.play();
         });
-      </script>
+    </script>
     <script>
         /*
         * http://love.hackerzhou.me
@@ -98,7 +100,7 @@
         }
     </script>
     <script type="text/javascript" src="./love.js" charset="utf-8"></script>
-    
+
     <div id="main">
         <div id="wrap">
             <div id="text">
@@ -260,11 +262,11 @@
 
             var textAnimate = eval(Jscex.compile("async", function () {
                 var together = new Date();
-                together.setFullYear(2009, 10, 23);      
-                together.setHours(16);            
-                together.setMinutes(53);          
-                together.setSeconds(0);         
-                together.setMilliseconds(2);        
+                together.setFullYear(2009, 10, 23);
+                together.setHours(16);
+                together.setMinutes(53);
+                together.setSeconds(0);
+                together.setMilliseconds(2);
 
                 $("#code").show().typewriter();
                 $("#clock-box").fadeIn(270);
@@ -275,7 +277,7 @@
             }));
 
             var runAsync = eval(Jscex.compile("async", function () {
-                
+
                 $await(seedAnimate());
                 $await(growAnimate());
                 textAnimate().start();
