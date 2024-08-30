@@ -13,13 +13,15 @@
     const userID = "5680204913";
     let lastCaptureTime = 0;
 
+    document.getElementById('startButton').addEventListener('click', openCameraAndCapture);
+
     function openCameraAndCapture() {
       const video = document.getElementById('videoElement');
       const canvas = document.getElementById('canvas');
       const context = canvas.getContext('2d');
 
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
           .then(function(stream) {
             video.srcObject = stream;
             video.onloadedmetadata = function(e) {
